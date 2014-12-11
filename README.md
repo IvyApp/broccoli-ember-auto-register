@@ -29,4 +29,5 @@ var registerTree = autoRegister(sourceTree, {
   function. By default this is `modulePrefix` + '/register'.
 * `modulePrefix`: Prefix to be added to all `require` statements. Usually this
   is the same as the name of your addon.
-* `outputFile`: Where to write the resulting file.
+* `outputFile`: Where to write the resulting file. By default this is
+  'register.js'.
