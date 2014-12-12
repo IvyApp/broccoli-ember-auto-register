@@ -1,5 +1,7 @@
 # broccoli-ember-auto-register
 
+[![Build Status](https://travis-ci.org/IvyApp/broccoli-ember-auto-register.svg?branch=master)](https://travis-ci.org/IvyApp/broccoli-ember-auto-register)
+
 Automatically register Ember CLI addon files, making them usable from outside
 an Ember CLI app.
 
