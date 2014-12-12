@@ -3,9 +3,9 @@
 
 var Writer = require('broccoli-writer');
 var fs = require('fs');
-var helpers = require('broccoli-kitchen-sink-helpers');
 var inflect = require('i')();
 var path = require('path');
+var walkSync = require('walk-sync');
 
 function EmberAutoRegister(inputTree, options) {
   if (!(this instanceof EmberAutoRegister)) {
@@ -19,7 +19,6 @@ function EmberAutoRegister(inputTree, options) {
     throw new Error('modulePrefix must be defined');
   }
 
-  this.inputFiles = options.inputFiles || ['**/*.{handlebars,hbs,js}'];
   this.modulePrefix = options.modulePrefix;
   this.moduleName = options.moduleName || this.modulePrefix + '/register';
   this.outputFile = options.outputFile || 'register.js';
@@ -29,7 +28,6 @@ EmberAutoRegister.prototype = Object.create(Writer.prototype);
 EmberAutoRegister.prototype.constructor = EmberAutoRegister;
 
 EmberAutoRegister.prototype.write = function(readTree, destDir) {
-  var inputFiles = this.inputFiles;
   var moduleName = this.moduleName;
   var modulePrefix = this.modulePrefix;
   var outputFile = this.outputFile;
@@ -40,7 +38,9 @@ EmberAutoRegister.prototype.write = function(readTree, destDir) {
     output.push("define('" + moduleName + "', ['exports'], function(__exports__) {");
     output.push("  'use strict';");
     output.push("  __exports__['default'] = function(container) {");
-    helpers.multiGlob(inputFiles, { cwd: srcDir }).forEach(function(filename) {
+    walkSync(srcDir).filter(function(filename) {
+      return filename.charAt(filename.length - 1) !== '/'; // ignore subdirectories
+    }).forEach(function(filename) {
       var parts = filename.split(path.sep);
       var ext = path.extname(filename);
       var key = inflect.singularize(parts[0]) + ':' + parts.slice(1).join('/').replace(ext, '');
